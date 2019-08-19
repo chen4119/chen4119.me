@@ -1,0 +1,11 @@
+context: http://schema.org
+type: Person
+email: chen4119@hotmail.com
+familyName: Chen
+gender: Male
+givenName: Wan Chun
+description: Something about Wan Chun Chen
+sameAs:
+  - https://github.com/chen4119
+  - https://www.linkedin.com/in/wan-chun-chen-9a95a010
+url: about.html

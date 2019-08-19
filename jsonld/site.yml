@@ -1,0 +1,9 @@
+context: http://schema.org
+type: WebSite
+publisher: jsonld/me.yml
+headline: Wan Chun Chen
+description: Wan Chun Chen's personal website
+keywords: 
+  - Wan Chun Chen
+  - chen4119
+url: index.html

@@ -1,0 +1,24 @@
+{
+    "name": "chen4119.me",
+    "version": "0.0.1",
+    "description": "Personal website, built with Sambal",
+    "author": "Wan Chun Chen",
+    "license": "MIT",
+    "engines": {
+        "node": ">=8.0.0"
+    },
+    "scripts": {
+        "build": "npm run clean && node generate.js",
+        "clean": "rimraf ./public",
+        "start": "http-server ./public -c-1 --p 8081"
+    },
+    "dependencies": {
+        "sambal-ssg": "0.0.5",
+        "@fortawesome/fontawesome-free": "5.10.1"
+    },
+    "devDependencies": {
+        "@webcomponents/webcomponentsjs": "2.2.10",
+        "http-server": "0.11.1",
+        "rimraf": "3.0.0"
+    }
+}
