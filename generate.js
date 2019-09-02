@@ -1,16 +1,8 @@
 const {of, defer, forkJoin} = require("rxjs");
-const {map} = require("rxjs/operators");
+const {map, bufferCount, pluck} = require("rxjs/operators");
 const fs = require("fs");
-const {fromSchemaOrg, template, layout, render, Packager} = require("sambal-ssg");
-const {renderNavigation, renderLayout, renderHeader, renderLanding, renderAbout} = require("./js/templates");
-/*
-const multi = from([1, 2, 3]).pipe(multicast(() => new Subject())) as ConnectableObservable<any>;
-
-multi.pipe(map((d) => `one-${d}`)).subscribe((d) => console.log(d));
-multi.pipe(map((d) => `two-${d}`)).subscribe((d) => console.log(d));
-
-multi.connect();
-*/
+const {schemaOrgMultiCast, layout, render, Packager, paginate, aggregateBy, toSchemaOrgItemList, groupAndPaginateBy} = require("sambal-ssg");
+const {renderLayout, renderAbout, renderBlogPage, renderBlogCollection, renderTags, renderNavBar, renderBlogPost} = require("./js/templates");
 
 function readFile(src) {
     return new Promise((resolve, reject) => {
@@ -24,45 +16,67 @@ function readFile(src) {
     });
 }
 
-const navigation = [
-    {href: "about.html", label: "About"}
-];
-
-
 const packager = new Packager("./public");
 packager
-.clean();
+.clean()
+.copy("node_modules/@fortawesome/fontawesome-free")
+.copy("node_modules/jquery")
+.copy("node_modules/bootstrap")
+.copy("node_modules/prismjs");
 
-// const nav = defer(() => renderNavigation({navigation: navigation}));
+
+const blogSource = schemaOrgMultiCast("blogposts");
+
+const tags = blogSource
+.pipe(aggregateBy("jsonld.keywords"))
+.pipe(render(renderTags))
+.pipe(pluck('html'))
+.toPromise();
+
+function renderToRoute(src, route) {
+    src
+    .pipe(layout({
+        tags: tags,
+        blogs: renderBlogPage
+    }))
+    .pipe(layout({
+        head: readFile("fragments/head.html"),
+        nav: renderNavBar,
+        content: renderBlogCollection
+    }))
+    .pipe(render(renderLayout))
+    .subscribe(packager.route(route));
+}
+
+
+const blogList = blogSource
+.pipe(bufferCount(3))
+.pipe(paginate())
+.pipe(toSchemaOrgItemList("data"));
+
+renderToRoute(blogList, "page-${page}.html");
 
 /*
-forkJoin({
-    jsonld: fromSchemaOrg("jsonld/site.yml"),
-    navigation: renderNavigation({navigation: navigation})
-})
-.subscribe(d => console.log(d));*/
+const blogByTag = blogSource
+.pipe(groupAndPaginateBy(3, "jsonld.keywords"))
+.pipe(toSchemaOrgItemList("data"))
 
+renderToRoute(blogByTag, "${groupBy}-${page}.html");*/
 
-fromSchemaOrg("jsonld/site.yml")
+blogSource
 .pipe(layout({
     head: readFile("fragments/head.html"),
-    header: renderHeader({navigation: renderNavigation({navigation: navigation})}),
-    content: renderLanding
+    nav: renderNavBar,
+    content: renderBlogPost
 }))
 .pipe(render(renderLayout))
-.subscribe(async (d) => {
-    await packager.route(":url", d);
-});
+.subscribe(packager.route("${jsonld.identifier}.html"));
 
-fromSchemaOrg("jsonld/me.yml")
-.pipe(layout({
-    head: readFile("fragments/head.html"),
-    header: renderHeader({navigation: renderNavigation({navigation: navigation})}),
-    content: renderAbout
-}))
-.pipe(render(renderLayout))
-.subscribe(async (d) => {
-    await packager.route(":url", d);
-});
+
+
+blogSource.connect();
+
+
+
 
 
