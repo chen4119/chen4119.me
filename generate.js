@@ -1,20 +1,8 @@
 const {of, defer, forkJoin} = require("rxjs");
 const {map, bufferCount, pluck} = require("rxjs/operators");
-const fs = require("fs");
-const {schemaOrgMultiCast, layout, render, Packager, paginate, aggregateBy, toSchemaOrgItemList, groupAndPaginateBy} = require("sambal-ssg");
-const {renderLayout, renderAbout, renderBlogPage, renderBlogCollection, renderTags, renderNavBar, renderBlogPost} = require("./js/templates");
+const {localFileMultiCast, render, Packager, paginate, aggregateBy, toSchemaOrgItemList, groupAndPaginateBy, loadHtml, hydrateJsonLd} = require("sambal-ssg");
+const {getBlogPostRenderer, getBlogListRenderer, getAboutRenderer, renderTags} = require("./js/templates");
 
-function readFile(src) {
-    return new Promise((resolve, reject) => {
-        fs.readFile(src, "utf-8", (err, data) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(data);
-            }
-        })
-    });
-}
 
 const packager = new Packager("./public");
 packager
@@ -24,57 +12,41 @@ packager
 .copy("node_modules/bootstrap")
 .copy("node_modules/prismjs");
 
-
-const blogSource = schemaOrgMultiCast("blogposts");
+const blogSource = localFileMultiCast("blogposts/two-common-gotchas-in-react.md");
+const aboutSource = localFileMultiCast("jsonld/me.yml");
 
 const tags = blogSource
-.pipe(aggregateBy("jsonld.keywords"))
+.pipe(aggregateBy("keywords"))
 .pipe(render(renderTags))
-.pipe(pluck('html'))
+.pipe(map(({html}) => html.html()))
 .toPromise();
 
-function renderToRoute(src, route) {
-    src
-    .pipe(layout({
-        tags: tags,
-        blogs: renderBlogPage
-    }))
-    .pipe(layout({
-        head: readFile("fragments/head.html"),
-        nav: renderNavBar,
-        content: renderBlogCollection
-    }))
-    .pipe(render(renderLayout))
-    .subscribe(packager.route(route));
-}
+const head = loadHtml("fragments/head.html");
 
-
-const blogList = blogSource
-.pipe(bufferCount(3))
-.pipe(paginate())
-.pipe(toSchemaOrgItemList("data"));
-
-renderToRoute(blogList, "page-${page}.html");
-
-/*
-const blogByTag = blogSource
-.pipe(groupAndPaginateBy(3, "jsonld.keywords"))
-.pipe(toSchemaOrgItemList("data"))
-
-renderToRoute(blogByTag, "${groupBy}-${page}.html");*/
 
 blogSource
-.pipe(layout({
-    head: readFile("fragments/head.html"),
-    nav: renderNavBar,
-    content: renderBlogPost
-}))
-.pipe(render(renderLayout))
-.subscribe(packager.route("${jsonld.identifier}.html"));
+.pipe(hydrateJsonLd())
+.pipe(bufferCount(3))
+.pipe(paginate())
+.pipe(render(getBlogListRenderer(head, tags)))
+.subscribe(packager.route("pages/page-${page}.html"));
 
+blogSource
+.pipe(hydrateJsonLd())
+.pipe(groupAndPaginateBy(3, "keywords"))
+.pipe(render(getBlogListRenderer(head, tags)))
+.subscribe(packager.route("tags/${groupBy}/${page}.html"));
 
+blogSource
+.pipe(render(getBlogPostRenderer(head)))
+.subscribe(packager.route("${year}/${id}.html"));
+
+aboutSource
+.pipe(render(getAboutRenderer(head)))
+.subscribe(packager.route("about.html"));
 
 blogSource.connect();
+aboutSource.connect();
 
 
 
