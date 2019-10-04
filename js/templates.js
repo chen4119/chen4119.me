@@ -34,13 +34,13 @@ const renderBlogCollection = ({blogs, tags}) => {
 const renderBlogPage = ({data, page, hasNext}) => {
     return template`
         ${data.map((({headline, description, author, dateCreated, year, id}) => {
-            // const createdDate = new Date(dateCreated);
+            const createdDate = new Date(dateCreated);
             return `
                 <div class="blog-summary">
                     <a href="${year}/${id}.html">
                         <h2 class="blog-post-title">${headline}</h2>
                     </a>
-                    <p class="blog-post-meta">${dateCreated.toLocaleDateString()} by ${author.name}</p>
+                    <p class="blog-post-meta">${createdDate.toLocaleDateString()} by ${author.name}</p>
                     <p>${description}</p>
                     <hr>
                 </div>
