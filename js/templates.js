@@ -31,9 +31,9 @@ const renderBlogCollection = ({blogs, tags}) => {
     `;
 };
 
-const renderBlogPage = ({data, page, hasNext}) => {
+const renderBlogPage = ({items, page, hasNext}) => {
     return template`
-        ${data.map((({headline, description, author, dateCreated, year, id}) => {
+        ${items.map((({headline, description, author, dateCreated, year, id}) => {
             const createdDate = new Date(dateCreated);
             return `
                 <div class="blog-summary">
