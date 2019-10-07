@@ -1,5 +1,8 @@
 const {template} = require("sambal-ssg");
 
+const formatBlogPostUrl = ({year, id}) => `blogs/${year}/${id}.html`;
+const formatBlogListUrl = ({page}) => page === 1 ? "index.html" : `blogs/pages/${page}.html`;
+const formatBlogListByTagUrl = ({groupBy, page}) => `blogs/tag/${groupBy}/${page}.html`;
 
 const renderLayout = ({head, nav, content}) => {
     return template`
@@ -31,30 +34,31 @@ const renderBlogCollection = ({blogs, tags}) => {
     `;
 };
 
-const renderBlogPage = ({items, page, hasNext}) => {
+const renderBlogPage = ({items, page, hasNext, groupBy, pageUrlFormatter}) => {
     return template`
+        ${groupBy ? `<h1 class="header">Showing tag: ${groupBy}</h1>` : null}
         ${items.map((({headline, description, author, dateCreated, year, id}) => {
             const createdDate = new Date(dateCreated);
             return `
                 <div class="blog-summary">
-                    <a href="${year}/${id}.html">
+                    <a href="${formatBlogPostUrl({year: year, id: id})}">
                         <h2 class="blog-post-title">${headline}</h2>
                     </a>
-                    <p class="blog-post-meta">${createdDate.toLocaleDateString()} by ${author.name}</p>
+                    <p class="blog-post-meta">${createdDate.toLocaleDateString()} ${author.name}</p>
                     <p>${description}</p>
                     <hr>
                 </div>
             `;
         }))}
         <nav class="blog-pagination">
-            <a class="btn btn-outline-primary ${hasNext ? '' : 'disabled'}" href="${hasNext ? `pages/page-${page + 1}.html` : '#'}">Older</a>
-            <a class="btn btn-outline-primary ${page === 1 ? 'disabled' : ''}" href="${page === 1 ? '#' : `pages/page-${page - 1}.html`}" tabindex="-1">Newer</a>
+            <a class="btn btn-outline-primary ${hasNext ? '' : 'disabled'}" href="${hasNext ? pageUrlFormatter({page: page + 1, groupBy: groupBy}) : '#'}">Older</a>
+            <a class="btn btn-outline-primary ${page === 1 ? 'disabled' : ''}" href="${page === 1 ? '#' : pageUrlFormatter({page: page - 1, groupBy: groupBy})}" tabindex="-1">Newer</a>
         </nav>
     `;
 };
 
 const renderNavBar = ({isAbout}) => {
-    const homepage = "pages/page-1.html";
+    const homepage = "index.html";
     return template`
         <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +84,7 @@ const renderTags = (tags) => {
             <h4 class="font-italic">Tags</h4>
             <ul class="list-group">
                 ${tags.map(tag => `
-                    <a href="tags/${tag.key}/1.html" class="list-group-item d-flex justify-content-between align-items-center active">
+                    <a href="${formatBlogListByTagUrl({groupBy: tag.key, page: 1})}" class="list-group-item d-flex justify-content-between align-items-center">
                         ${tag.key}
                         <span class="badge badge-primary badge-pill">${tag.count}</span>
                     </a>
@@ -109,27 +113,26 @@ const renderAbout = ({sameAs, description}) => {
     `;
 }
 
-const renderBlogPost = ({headline, author, keywords, language, text}) => {
+const renderBlogPost = ({headline, author, keywords, dateCreated, text}) => {
+    const createdDate = new Date(dateCreated);
     return template`
         <div class="blog-summary">
             <h2 class="blog-post-title">${headline}</h2>
-            <p class="blog-post-meta">Jan 1, 2014 by ${author.name}</p>
-            ${keywords && keywords.length > 0 ? keywords.map(word => `<span class="badge badge-secondary">${word}</span>`) : ''}
-            <div class="language-${language}">
-                <p>${text}</p>
-            </div>
+            <p class="blog-post-meta">${createdDate.toLocaleDateString()} ${author.name}</p>
+            ${keywords && keywords.length > 0 ? keywords.map(word => `<span class="badge badge-secondary">${word}</span>`) : null}
+            ${text}
         </div>
     `;
 };
 
-function getBlogListRenderer(head, tags) {
+function getBlogListRenderer(head, tags, pageUrlFormatter) {
     return (props) => {
         return renderLayout({
             head: head,
             nav: renderNavBar({isAbout: false}),
             content: renderBlogCollection({
                 tags: tags,
-                blogs: renderBlogPage(props)
+                blogs: renderBlogPage({...props, pageUrlFormatter: pageUrlFormatter})
             })
         });
     };
@@ -159,5 +162,8 @@ module.exports = {
     getBlogListRenderer: getBlogListRenderer,
     getBlogPostRenderer: getBlogPostRenderer,
     getAboutRenderer: getAboutRenderer,
+    formatBlogPostUrl: formatBlogPostUrl,
+    formatBlogListUrl: formatBlogListUrl,
+    formatBlogListByTagUrl: formatBlogListByTagUrl,
     renderTags: renderTags
 };
