@@ -9,7 +9,7 @@ const {
     toSchemaOrgUrlList,
     groupAndPaginateBy,
     loadHtml,
-    toSchemaOrgJsonLd,
+    pushSchemaOrgJsonLd,
     toHtml,
     setHtmlHeadMeta
 } = require("sambal-ssg");
@@ -58,28 +58,30 @@ const blogSourceWithUrl = blogSource.pipe(map(d => ({...d, url: `${HOST}/${forma
 blogSourceWithUrl
 .pipe(bufferCount(BLOGS_PER_PAGE))
 .pipe(paginate())
+.pipe(map(d => ({...d, urls: d.items.map(item => item.url)})))
+.pipe(toSchemaOrgUrlList("urls"))
+.pipe(pushSchemaOrgJsonLd("ItemList", {field: "urls"}))
 .pipe(render(getBlogListRenderer(head, tags, formatBlogListUrl)))
-.pipe(map(d => ({...d, data: {...d.data, items: d.data.items.map(item => item.url)}})))
-.pipe(toSchemaOrgUrlList("data.items"))
 .subscribe(packager.route(formatBlogListUrl));
 
 blogSourceWithUrl
 .pipe(groupAndPaginateBy(BLOGS_PER_PAGE, "keywords"))
+.pipe(map(d => ({...d, urls: d.items.map(item => item.url)})))
+.pipe(toSchemaOrgUrlList("urls"))
+.pipe(pushSchemaOrgJsonLd("ItemList", {field: "urls"}))
 .pipe(render(getBlogListRenderer(head, tags, formatBlogListByTagUrl)))
-.pipe(map(d => ({...d, data: {...d.data, items: d.data.items.map(item => item.url)}})))
-.pipe(toSchemaOrgUrlList("data.items"))
 .subscribe(packager.route(formatBlogListByTagUrl));
 
 blogSourceWithUrl
+.pipe(pushSchemaOrgJsonLd("BlogPosting"))
 .pipe(render(getBlogPostRenderer(head)))
-.pipe(toSchemaOrgJsonLd("BlogPosting", {field: "data", dest: "data.jsonld"}))
 .pipe(setHtmlHeadMeta(HEAD_META_SELECTORS))
 .subscribe(packager.route(formatBlogPostUrl));
 
 aboutSource
 .pipe(map(d => ({...d, url: `${HOST}/about.html`})))
+.pipe(pushSchemaOrgJsonLd("Person"))
 .pipe(render(getAboutRenderer(head)))
-.pipe(toSchemaOrgJsonLd("Person", {field: "data"}))
 .pipe(setHtmlHeadMeta({
     ...HEAD_META_SELECTORS,
     title: "name",
