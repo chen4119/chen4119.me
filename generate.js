@@ -6,7 +6,7 @@ const {
     Packager,
     paginate,
     aggregateBy,
-    toSchemaOrgUrlList,
+    pushSchemaOrgUrlList,
     groupAndPaginateBy,
     loadHtml,
     pushSchemaOrgJsonLd,
@@ -59,28 +59,26 @@ blogSourceWithUrl
 .pipe(bufferCount(BLOGS_PER_PAGE))
 .pipe(paginate())
 .pipe(map(d => ({...d, urls: d.items.map(item => item.url)})))
-.pipe(toSchemaOrgUrlList("urls"))
-.pipe(pushSchemaOrgJsonLd("ItemList", {field: "urls"}))
+.pipe(pushSchemaOrgUrlList({field: "urls"}))
 .pipe(render(getBlogListRenderer(head, tags, formatBlogListUrl)))
 .subscribe(packager.route(formatBlogListUrl));
 
 blogSourceWithUrl
 .pipe(groupAndPaginateBy(BLOGS_PER_PAGE, "keywords"))
 .pipe(map(d => ({...d, urls: d.items.map(item => item.url)})))
-.pipe(toSchemaOrgUrlList("urls"))
-.pipe(pushSchemaOrgJsonLd("ItemList", {field: "urls"}))
+.pipe(pushSchemaOrgUrlList({field: "urls"}))
 .pipe(render(getBlogListRenderer(head, tags, formatBlogListByTagUrl)))
 .subscribe(packager.route(formatBlogListByTagUrl));
 
 blogSourceWithUrl
-.pipe(pushSchemaOrgJsonLd("BlogPosting"))
+.pipe(pushSchemaOrgJsonLd("BlogPosting", {context: {"@base": HOST}}))
 .pipe(render(getBlogPostRenderer(head)))
 .pipe(setHtmlHeadMeta(HEAD_META_SELECTORS))
 .subscribe(packager.route(formatBlogPostUrl));
 
 aboutSource
 .pipe(map(d => ({...d, url: `${HOST}/about.html`})))
-.pipe(pushSchemaOrgJsonLd("Person"))
+.pipe(pushSchemaOrgJsonLd("Person", {context: {"@base": HOST}}))
 .pipe(render(getAboutRenderer(head)))
 .pipe(setHtmlHeadMeta({
     ...HEAD_META_SELECTORS,

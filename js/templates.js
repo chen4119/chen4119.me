@@ -1,8 +1,8 @@
 const {template} = require("sambal-ssg");
 
 const formatBlogPostUrl = ({year, id}) => `blogs/${year}/${id}.html`;
-const formatBlogListUrl = ({page}) => page === 1 ? "index.html" : `blogs/pages/${page}.html`;
-const formatBlogListByTagUrl = ({groupBy, page}) => `blogs/tag/${groupBy}/${page}.html`;
+const formatBlogListUrl = ({page}) => page === 1 ? "index.html" : `blogs/pages/page_${page}.html`;
+const formatBlogListByTagUrl = ({groupBy, page}) => `blogs/tag/${groupBy}/page_${page}.html`;
 
 const renderLayout = ({head, nav, content}) => {
     return template`
