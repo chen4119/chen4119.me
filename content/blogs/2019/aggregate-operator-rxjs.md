@@ -2,12 +2,10 @@
 headline: Creating an aggregate operator in RxJs
 description: How to implement a custom aggregate operator in RxJs
 author:
-    "@id": _:jsonld/me.yml
+    "@id": _:content/about.yml
 dateCreated: 2019-10-26
 dateModified: 2019-10-26
 keywords: ["rxjs", "javascript"]
-id: aggregate-operator-rxjs
-year: 2019
 ---
 
 Below is an implementation of a custom aggregate operator in RxJs that can be pretty useful.  You specify which field in the data object you want to aggregate by and the operator will return you the count of every unique value of that field.  If the value of the field is an array, it will iterate through every item in the array.
