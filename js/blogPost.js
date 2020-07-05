@@ -40,28 +40,3 @@ function page$(head) {
 module.exports = {
     blogPost$: page$
 };
-
-/*
-function getBlogPostRenderer(head) {
-    return (props) => {
-        return renderLayout({
-            css: props.css,
-            head: head,
-            nav: renderNavBar({isAbout: false}),
-            content: renderBlogPost(props)
-        });
-    };
-}
-
-function renderBlogPosts(content$, head) {
-    return content$
-    .pipe(filter(d => {
-        return d.url !== "https://chen4119.me/about";
-    }))
-    .pipe(pushSchemaOrgJsonLd(d => toSchemaOrgJsonLd(d, "BlogPosting")))
-    .pipe(render(getBlogPostRenderer(head)));
-}
-
-module.exports = {
-    renderBlogPosts: renderBlogPosts
-};*/

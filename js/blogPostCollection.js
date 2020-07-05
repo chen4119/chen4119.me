@@ -1,5 +1,6 @@
 const {template, render, pushJsonLd, toSchemaOrgJsonLd, loadJsonLd, loadContent} = require("sambal");
 const {renderLayout, renderNavBar} = require("./layout");
+const {HOST} = require("./constants");
 const {of, from, forkJoin, zip} = require("rxjs");
 const {map, mergeMap, filter, share, toArray} = require("rxjs/operators");
 
@@ -80,7 +81,7 @@ function blogCollection$(latestBlogs, head, tags, urlFormatter) {
 
         return forkJoin({
             page: page$,
-            urls: blogUrl$.pipe(map(d => `https://chen4119.me${d}`)).pipe(toArray()),
+            urls: blogUrl$.pipe(map(d => `${HOST}${d}`)).pipe(toArray()),
             blogs: zip(blogUrl$, loadBlog$).pipe(map(([url, blog]) => ({ ...blog, url: url }))).pipe(toArray())
         })
         .pipe(map(d => ({

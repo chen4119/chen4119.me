@@ -2,7 +2,7 @@ const {blogPost$} = require("./js/blogPost");
 const {aboutPage$} = require("./js/about");
 const {blogCollection$} = require("./js/blogPostCollection");
 const {SambalCollection, paginate, render, toHtml, template} = require("sambal");
-const {collections, BLOGS_PER_PAGE, formatBlogListUrl, formatBlogListByTagUrl} = require("./js/constants");
+const {collections, HOST, BLOG_ROOT, BLOGS_PER_PAGE, formatBlogListUrl, formatBlogListByTagUrl} = require("./js/constants");
 const {from, of} = require("rxjs");
 const {mergeMap, bufferCount, map, mergeAll, toArray, filter} = require("rxjs/operators");
 const fs = require("fs");
@@ -73,7 +73,7 @@ function sitemap() {
     .pipe(mergeMap(pages => from(pages)))
     .pipe(map(page => formatBlogListUrl(page)));
     
-    const files = shelljs.ls("-R", "./content/blogs");
+    const files = shelljs.ls("-R", BLOG_ROOT);
     const staticPage$ = from([
         '/about',
         ...files.filter(f => f.endsWith(".md")).map(f => (`/blog/${f.substring(0, f.length - 3)}`))
@@ -83,7 +83,7 @@ function sitemap() {
 }
 
 module.exports = {
-    baseUrl: "https://chen4119.me",
+    baseUrl: HOST,
     routes: [
         {path: '/', render: blogCollection$(latestBlogs, head, tags, formatBlogListUrl)},
         {path: '/about', render: aboutPage$(head)},
