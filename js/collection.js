@@ -4,7 +4,7 @@ const {map, filter, mergeMap} = require("rxjs/operators");
 const {SambalCollection, loadJsonLd} = require("sambal");
 const {collections} = require("./constants");
 
-const docs = shelljs.ls("-R", "./content/blogs");
+const docs = shelljs.ls("-R", "./content/blog");
 const content$ = from(docs)
 .pipe(filter(uri => uri.endsWith(".md")))
 .pipe(mergeMap(uri => forkJoin({
