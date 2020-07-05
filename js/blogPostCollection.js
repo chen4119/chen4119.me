@@ -1,13 +1,7 @@
-const {template, render, paginate, pushSchemaOrgJsonLd, toSchemaOrgJsonLd, toHtml} = require("sambal");
+const {template, render, pushJsonLd, toSchemaOrgJsonLd, loadJsonLd, loadContent} = require("sambal");
 const {renderLayout, renderNavBar} = require("./layout");
-const {of, from} = require("rxjs");
-const {filter, bufferCount, map, mergeAll, mergeMap} = require("rxjs/operators");
-const nodeUrl = require("url");
-
-const BLOGS_PER_PAGE = 10;
-
-const formatBlogListUrl = ({page}) => page === 1 ? "index.html" : `blogs/pages/page_${page}`;
-const formatBlogListByTagUrl = ({groupBy, page}) => `blogs/tag/${encodeURIComponent(groupBy)}/page_${page}`;
+const {of, from, forkJoin, zip} = require("rxjs");
+const {map, mergeMap, filter, share, toArray} = require("rxjs/operators");
 
 const renderBlogPage = ({items, page, hasNext, groupBy, pageUrlFormatter}) => {
     return template`
@@ -16,7 +10,7 @@ const renderBlogPage = ({items, page, hasNext, groupBy, pageUrlFormatter}) => {
             const createdDate = new Date(dateCreated);
             return `
                 <div class="blog-summary">
-                    <a href="${nodeUrl.parse(url).pathname}">
+                    <a href="${url}">
                         <h2 class="blog-post-title">${headline}</h2>
                     </a>
                     <p class="blog-post-meta">${createdDate.toLocaleDateString()} ${author.name}</p>
@@ -45,25 +39,6 @@ const renderBlogCollection = ({blogs, tags}) => {
     `;
 };
 
-const renderTags = ({partitions}) => {
-    return template`
-        <div class="p-4">
-            <h4 class="font-italic">Tags</h4>
-            <ul class="list-group">
-                ${partitions.map(p => {
-                    const key = p.partition.keywords;
-                    const size = p.size;
-                    return template `
-                        <a href="${formatBlogListByTagUrl({groupBy: key, page: 1})}" class="list-group-item d-flex justify-content-between align-items-center">
-                            ${key}
-                            <span class="badge badge-primary badge-pill">${size}</span>
-                        </a>
-                    `;
-                })}
-            </ul>
-        </div>
-    `;
-};
 
 function getBlogListRenderer(head, tags, pageUrlFormatter) {
     return (props) => {
@@ -79,42 +54,46 @@ function getBlogListRenderer(head, tags, pageUrlFormatter) {
     };
 }
 
-function renderTagsComponent(partitions) {
-    return of({partitions: partitions})
-    .pipe(render(renderTags))
-    .pipe(toHtml())
-    .toPromise();
+function blogCollection$(latestBlogs, head, tags, urlFormatter) {
+    return ({path, params}) => {
+        let pageNum = 1;
+        if (params.page) {
+            pageNum = +params.page;
+        }
+        const page$ = from(latestBlogs)
+        .pipe(mergeMap(pages => from(pages)))
+        .pipe(filter(d => {
+            const groupByMatch = params.tag ? params.tag === d.groupBy : true;
+            return groupByMatch && d.page === pageNum;
+        }))
+        .pipe(share());
+
+        const blogUrl$ = page$
+        .pipe(mergeMap(p => from(p.items)))
+        .pipe(share());
+
+        const loadBlog$ = blogUrl$
+        .pipe(map(d => `content${d}.md`))
+        .pipe(loadJsonLd({
+            fetcher: (url) => loadContent(url)
+        }));
+
+        return forkJoin({
+            page: page$,
+            urls: blogUrl$.pipe(map(d => `https://chen4119.me${d}`)).pipe(toArray()),
+            blogs: zip(blogUrl$, loadBlog$).pipe(map(([url, blog]) => ({ ...blog, url: url }))).pipe(toArray())
+        })
+        .pipe(map(d => ({
+            ...d.page,
+            items: d.blogs,
+            urls: d.urls
+        })))
+        .pipe(pushJsonLd(d => toSchemaOrgJsonLd(d.urls, "BlogPosting")))
+        .pipe(render(getBlogListRenderer(head, tags, urlFormatter)));
+    };
 }
 
-function blogPostList(obs$, head, tags, urlFormatter, groupBy) {
-    return obs$
-    .pipe(bufferCount(BLOGS_PER_PAGE))
-    .pipe(paginate())
-    .pipe(map(d => ({
-        ...d,
-        url: urlFormatter({groupBy: groupBy, page: d.page}),
-        urls: d.items.map(item => item.url)
-    })))
-    .pipe(pushSchemaOrgJsonLd(d => toSchemaOrgJsonLd(d.urls, "BlogPosting")))
-    .pipe(render(getBlogListRenderer(head, tags, urlFormatter)));
-}
-
-function renderBlogPostCollection(store, content$, tagCollectionStats, head) {
-    const partitions = tagCollectionStats.partitions.filter(p => p.partition.keywords !== "");
-    const tags = renderTagsComponent(partitions);
-
-    const blogsByTag$ = from(partitions
-    .map(p => blogPostList(store.collection("blogsByKeys", p.partition), head, tags, formatBlogListByTagUrl, p.partition.keywords)))
-    .pipe(mergeAll());
-
-    const blogPostObs$ = content$
-    .pipe(filter(d => {
-        return d.url !== "https://chen4119.me/about";
-    }));
-    const blogsList$ = blogPostList(blogPostObs$, head, tags, formatBlogListUrl);
-    return [blogsList$, blogsByTag$];
-}
 
 module.exports = {
-    renderBlogPostCollection: renderBlogPostCollection
+    blogCollection$: blogCollection$
 };

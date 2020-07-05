@@ -1,6 +1,6 @@
-const {template, render, pushSchemaOrgJsonLd, toSchemaOrgJsonLd} = require("sambal");
+const {template, render, pushJsonLd, loadJsonLd, loadContent, toSchemaOrgJsonLd} = require("sambal");
 const {renderLayout, renderNavBar} = require("./layout");
-const {filter} = require("rxjs/operators");
+const {of} = require("rxjs");
 
 
 const renderBlogPost = ({headline, author, keywords, dateCreated, text}) => {
@@ -15,7 +15,33 @@ const renderBlogPost = ({headline, author, keywords, dateCreated, text}) => {
     `;
 };
 
+function getRenderer(head) {
+    return (props) => {
+        return renderLayout({
+            css: props.css,
+            head: head,
+            nav: renderNavBar({isAbout: false}),
+            content: renderBlogPost(props)
+        });
+    };
+}
 
+function page$(head) {
+    return ({path, params}) => {
+        return of(`content/blog/${params.year}/${params.file}.md`)
+        .pipe(loadJsonLd({
+            fetcher: (url) => loadContent(url)
+        }))
+        .pipe(pushJsonLd(d => toSchemaOrgJsonLd(d, "BlogPosting")))
+        .pipe(render(getRenderer(head)));
+    };
+}
+
+module.exports = {
+    blogPost$: page$
+};
+
+/*
 function getBlogPostRenderer(head) {
     return (props) => {
         return renderLayout({
@@ -38,4 +64,4 @@ function renderBlogPosts(content$, head) {
 
 module.exports = {
     renderBlogPosts: renderBlogPosts
-};
+};*/

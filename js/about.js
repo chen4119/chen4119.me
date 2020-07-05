@@ -1,8 +1,8 @@
-const {template, render, pushSchemaOrgJsonLd, toSchemaOrgJsonLd} = require("sambal");
+const {template, render, pushJsonLd, loadJsonLd, toSchemaOrgJsonLd} = require("sambal");
 const {renderLayout, renderNavBar} = require("./layout");
-const {filter} = require("rxjs/operators");
+const {of} = require("rxjs");
 
-const renderAboutPage = ({sameAs, description}) => {
+const renderAbout = ({sameAs, description}) => {
     return template`
         <section class="text-center">
             <div class="container">
@@ -21,26 +21,26 @@ const renderAboutPage = ({sameAs, description}) => {
     `;
 }
 
-function getAboutRenderer(head) {
+function getRenderer(head) {
     return (props) => {
         return renderLayout({
             css: props.css,
             head: head,
             nav: renderNavBar({isAbout: true}),
-            content: renderAboutPage(props)
+            content: renderAbout(props)
         });
     };
 }
 
-function renderAbout(content$, head) {
-    return content$
-    .pipe(filter(d => {
-        return d.url === "https://chen4119.me/about";
-    }))
-    .pipe(pushSchemaOrgJsonLd(d => toSchemaOrgJsonLd(d, "Person")))
-    .pipe(render(getAboutRenderer(head)));
+function page$(head) {
+    return ({path, params}) => {
+        return of("content/about.yml")
+        .pipe(loadJsonLd())
+        .pipe(pushJsonLd(d => toSchemaOrgJsonLd(d, "Person")))
+        .pipe(render(getRenderer(head)));
+    };
 }
 
 module.exports = {
-    renderAbout: renderAbout
+    aboutPage$: page$
 };
