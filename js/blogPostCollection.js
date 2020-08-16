@@ -14,7 +14,7 @@ const renderBlogPage = ({items, page, hasNext, groupBy, pageUrlFormatter}) => {
                     <a href="${url}">
                         <h2 class="blog-post-title">${headline}</h2>
                     </a>
-                    <p class="blog-post-meta">${createdDate.toLocaleDateString()} ${author.name}</p>
+                    <p class="blog-post-meta">${createdDate.toLocaleDateString()}</p>
                     <p>${description}</p>
                     <hr>
                 </div>

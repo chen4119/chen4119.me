@@ -23,7 +23,7 @@
         "file-loader": "5.0.2",
         "jquery": "3.5.1",
         "prismjs": "1.17.1",
-        "sambal": "0.0.33",
+        "sambal": "0.0.34",
         "sambal-cli": "0.0.34",
         "style-loader": "1.1.1",
         "url-loader": "3.0.0",
