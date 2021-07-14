@@ -8,25 +8,12 @@
         "node": ">=8.0.0"
     },
     "scripts": {
+        "start": "sambal serve",
         "build": "sambal build",
-        "index": "node js/collection.js",
-        "deploy": "npm run index && npm run build",
-        "start": "sambal serve"
+        "deploy": "npm run theme && npm run build",
+        "theme": "cd sambal-ui-material && npm install && npm run theme && cd .."
     },
     "devDependencies": {
-        "@babel/core": "7.7.7",
-        "@babel/preset-env": "7.7.7",
-        "@fortawesome/fontawesome-free": "5.10.1",
-        "babel-loader": "8.0.6",
-        "bootstrap": "4.3.1",
-        "css-loader": "3.4.0",
-        "file-loader": "5.0.2",
-        "jquery": "3.5.1",
-        "prismjs": "1.17.1",
-        "sambal": "0.0.34",
-        "sambal-cli": "0.0.34",
-        "style-loader": "1.1.1",
-        "url-loader": "3.0.0",
-        "webpack": "4.41.4"
+        "sambal": "0.0.51"
     }
 }

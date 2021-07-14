@@ -1,0 +1,14 @@
+"@type": Person
+name: Wan Chun Chen
+email: chen4119@hotmail.com
+familyName: Chen
+gender: Male
+givenName: Wan Chun
+sameAs:
+  - https://github.com/chen4119
+  - https://www.linkedin.com/in/wan-chun-chen-9a95a010
+hasOfferCatalog:
+  "@type": OfferCatalog
+  name: Open source software
+  itemListElement:
+    - "@id": https://www.sambal.dev/schema.json

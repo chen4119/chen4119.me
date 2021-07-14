@@ -1,0 +1,3 @@
+[submodule "sambal-ui-material"]
+	path = sambal-ui-material
+	url = https://github.com/chen4119/sambal-ui-material.git

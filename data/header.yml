@@ -1,0 +1,6 @@
+"@type": WPHeader
+headline: Home
+hasPart:
+  - "@type": SiteNavigationElement
+    name: About
+    url: /about
