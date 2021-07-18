@@ -61,4 +61,6 @@ typings/
 .next
 
 public/
+temp/
 .sambal/
+.DS_Store

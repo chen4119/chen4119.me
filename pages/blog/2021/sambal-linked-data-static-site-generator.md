@@ -3,7 +3,9 @@
 headline: Sambal - a linked data static site generator
 description: Using schema.org json-ld as a content model for an open way to build SEO websites
 author:
-    "@id": about
+  "@id": about
+image:
+  "@id": images/linked-data
 dateCreated: 2021-07-09
 dateModified: 2021-07-09
 keywords: 
