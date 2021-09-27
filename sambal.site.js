@@ -2,8 +2,8 @@ export const siteConfig = {
     baseUrl: "https://chen4119.me",
     collections: [
         {
-            uri: "blog/latest",
-            match: ["/blog/**/*"],
+            uri: "/blog/latest",
+            include: ["pages/blog/**/*"],
             sort: (a, b) => {
                 return b.dateCreated.getTime() - a.dateCreated.getTime();
             }
@@ -11,7 +11,7 @@ export const siteConfig = {
     ],
     imageTransforms: [
         {
-            match: "/images/**/*",
+            include: "data/images/**/*",
             encodingFormat: "image/webp",
             thumbnails: [
                 {

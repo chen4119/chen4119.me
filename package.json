@@ -14,6 +14,6 @@
         "theme": "cd sambal-ui-material && npm install && npm run theme && cd .."
     },
     "devDependencies": {
-        "sambal": "0.0.53"
+        "sambal": "0.0.59"
     }
 }

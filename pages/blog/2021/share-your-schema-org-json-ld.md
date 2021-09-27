@@ -3,9 +3,9 @@
 headline: Share your schema.org json-ld using Sambal
 description: Sambal generate your website in HTML and schema.org json-ld.  Now you can share your schema.org json-ld data just as easily as you share your webpage
 author:
-  "@id": about
+  "@id": /pages/about.yml
 image:
-  "@id": images/share-schema
+  "@id": /data/images/share-schema.jpg
 dateCreated: 2021-07-11
 dateModified: 2021-07-11
 keywords: 
