@@ -7,7 +7,7 @@ author:
 image:
   "@id": /data/images/linked-data.jpg
 dateCreated: 2021-07-09
-dateModified: 2021-07-09
+dateModified: 2021-10-04
 keywords: 
   - json-ld
   - schema.org
@@ -16,57 +16,43 @@ keywords:
   - sambal
 ---
 
-[Sambal](https://sambal.dev) is a linked data static site generator that use [schema.org](https://schema.org/) [json-ld](https://json-ld.org/) as the content model.  This is in contrast to popular static site generators today that are content model agnostic.  It is up to the users to define their own content model.  While the flexibility might seem beneficial in the beginning, I think eventually people will start realizing the pain of dealing with incompatible data schemas for even the most mundane content.
+[Sambal](https://sambal.dev) natively supports [schema.org](https://schema.org/) [json-ld](https://json-ld.org/) as the content model so you can render webpage directly from any schema.org json-ld data.  By using the open and well known schema.org vocabularies to structure your content from day one, it saves you the trouble of modeling your own content and later realizing it's not compatible with anyone else's content.
 
-Take the simple example of a blogpost.  It's been around for ages.  Everyone can agree that a blogpost contains an author, a timestamp, some tags, and the content of the post.  However, without a standard schema for a blogpost, you can encode a blogpost in various ways and that's not a good thing.  This incompatibility problem becomes more obvious when you salivate at these beautiful [blog themes](https://jekyllthemes.io/jekyll-blog-themes) for [Jekyll](https://jekyllrb.com/) but when you dig through the documentation, each one use a slightly different content model.  You facepalm and wonder if they deliberately did this to screw with you.
+Take the simple example of a blogpost which contains an author, a timestamp, some tags, and the content of the post.  However, without standardizing on schema.org vocabularies, there are literally hundreds of ways you can encode a blogpost.  Tag can be category, title can be header, summary can be description, etc.  This inconsistency in data schema is a big problem that hasn't really been addressed.  It's the reason why it's so hard to switch from one theme to another or one static site generator to another when building a website.  Everybody uses their own flavor of content model even when the content is as simple as a blogpost.
 
-This is why Sambal is designed to natively support schema.org json-ld as the content model.  Imagine all the synergies gained when all parties converge on the same content model. 
+Schema.org has over 700+ content types and most importantly, it's supported by all the big search engines like Google and Microsoft.  It's the ideal content model for the vast majority of websites.
 
-1. Content creators can create their content in schema.org and not have to ask, "What data schema should I use?"
-2. UI developers can create UI theme for schema.org types and not pigeonhole their theme to some self defined limited set of schema
-3. Sambal can easily infer the content type of your webpage and automatically generate Facebook, Twitter, and ld+json metadata
-4. The end result that everyone craves for is that search engine and AI agent/crawler can better understand your content and deliver it to your intended audience
-
-Sounds like a win, win, win, win for everybody involved.  Schema.org is a great choice because it's open, has over 700+ content types and most importantly, it's supported by all the big search engines like Google and Microsoft.  
-
-It's also fair to ask, then why write a completely new static site generator?  Why not just use schema.org content model with existing static site generators?  It's certainly possible and some people probably do already but existing static site generators do not fully leverage the power of linked data, which is what schema.org is.  Here's a simple example to illustrate what linked data is.  A simple schema.org blogpost markdown file might look like this
+It's also fair to ask, then why introduce a completely new static site generator?  You can use schema.org with existing static site generators too.  Yes, but existing static site generators do not fully leverage the power of linked data.  Schema.org json-ld can reference other pieces of data with a uri, similiar to how a hyperlink links to another webpage.  This allows you to do some pretty awesome things that plain old json/yaml data can't.  To illustrate what linked data can do, let's start with a simple markdown file for a blogpost that you commonly see.
 
 ```md
 ---
-"@type": BlogPosting
 headline: My first blog post
 author:
-  "@type": Person
-  name: John Smith
-  email: john.smith@gmail.com
-  sameAs:
-    - https://www.linkedin.com/in/john-smith
+  name: Blue Devil
+  email: blue.devil@email.com
 publisher:
-  "@type": Organization
   name: Blog Publisher
   address:
-    "@type": PostalAddress
-    streetAddress: 31 Main street
+    streetAddress: 125 Science Drive
     addressLocality: Durham
     addressRegion: NC
 ---
-My first blog post!
+Content of my post
 ```
 
-You can feed this into any static site generator to generate HTML but when you start having many blogposts, many written by the same author and others written by different author(s).  You can't really model this blogpost to author relationship with static json.  People usually do it with a database or CMS.  Using json-ld linked data however, you don't need this complexity.  Data fragments can live anywhere in the internet as long as it has a resolvable URL just like any webpage.  So the above blogpost markdown can be condensed into a simpler json-ld.
+This blogpost contains some data about the author and publisher but once you start having multiple blogposts by the same author and publisher, you'll need to duplicate the data in every markdown file.  There is no standard way to normalize the data in static json/yaml like you can with a database.  In json-ld format though, you can!  Data fragments can be stored anywhere online as long as it has a resolvable URL.  You can simply reference the data using the special "@id" keyword like such
 
 ```md
 ---
-"@type": BlogPosting
 headline: My first blog post
 author:
-  "@id": https://author.com/johnsmith/schema.json
+  "@id": https://author.com/bluedevil
 publisher:
   "@id": https://organization.com/blogpublisher
 ---
-My first blog post!
+Content of my post
 ```
 
-Here the author and publisher data fragment is hosted in separate websites.  Sambal can recursively hydrate the above json-ld data by automatically resolving all @id URLs.  This is actually very similar to what's happening in a GraphQL server where you provide a function to resolve a value for a type or field in a schema.  For linked data, you are resolving a value for a URI.  A URI doesn't necessary need to be a https:// URL either but that is the most common protocol.  It can also be a AWS s3:// URL, ipfs:// URL, or pretty much any protocol.
+You can fetch author and publisher data directly from source and never worry about data becoming stale.  Sambal recursively hydrate json-ld data by automatically resolving all @id urls.  A url doesn't necessary need to be a https:// either.  It can be a AWS s3:// url, ipfs:// url, or pretty much any protocol.  Sambal provides an easy way to customize how to resolve any url.
 
-By embracing open standards, Sambal looks to bring more compatiblity in publishing web content and avoid vendor lock in.  [Get started](https://www.sambal.dev/docs/get-started/) with Sambal to build your linked data [JAMstack](https://jamstack.org/) website.
+[Get started](https://www.sambal.dev/docs/get-started/) with Sambal to build your linked data [JAMstack](https://jamstack.org/) website.

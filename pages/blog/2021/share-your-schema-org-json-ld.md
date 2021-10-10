@@ -22,7 +22,7 @@ There are actually many good reasons to make it easier for software applications
 
 Unfortunately the vast majority of tools available for building a website today still focus mainly on publishing HTML and optimizing the visual experience (aka for humans).  The metadata and semantic markups for the website is generally an afterthought (aka for applications).
 
-[Sambal](https://sambal.dev) is a new breed of static site generator that publish your content in both HTML and [schema.org](https://schema.org/) [json-ld](https://json-ld.org/) so no matter a human or bot visit your website, they each can easily consume your content.  Sambal automatically adds the correct ld+json, Facebook, and Twitter metadata tags to your webpage and generates a separate schema.org json-ld file.
+[Sambal](https://sambal.dev) publish your content in both HTML and [schema.org](https://schema.org/) [json-ld](https://json-ld.org/) so no matter a human or bot visit your website, they each can easily consume your content.  Sambal automatically adds the correct ld+json, Facebook, and Twitter metadata tags to your webpage and generates a separate schema.org json-ld file.
 
 To see this in action, you can check out how to [get started](https://www.sambal.dev/docs/get-started) with Sambal or see the get started page in [schema.org json-ld format](https://www.sambal.dev/docs/get-started/schema.json).  Now you can share your schema.org json-ld data just as easily as you share your webpage.
 
