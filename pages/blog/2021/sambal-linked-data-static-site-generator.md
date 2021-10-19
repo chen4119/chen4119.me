@@ -1,7 +1,7 @@
 ---
 "@type": BlogPosting
 headline: Sambal - a linked data static site generator
-description: Using schema.org json-ld as a content model for an open way to build SEO websites
+description: Generate SEO website directly from schema.org json-ld content 
 author:
   "@id": /pages/about.yml
 image:
@@ -14,6 +14,7 @@ keywords:
   - linked data
   - static site generator
   - sambal
+  - seo
 ---
 
 [Sambal](https://sambal.dev) natively supports [schema.org](https://schema.org/) [json-ld](https://json-ld.org/) as the content model so you can render webpage directly from any schema.org json-ld data.  By using the open and well known schema.org vocabularies to structure your content from day one, it saves you the trouble of modeling your own content and later realizing it's not compatible with anyone else's content.
@@ -55,4 +56,4 @@ Content of my post
 
 You can fetch author and publisher data directly from source and never worry about data becoming stale.  Sambal recursively hydrate json-ld data by automatically resolving all @id urls.  A url doesn't necessary need to be a https:// either.  It can be a AWS s3:// url, ipfs:// url, or pretty much any protocol.  Sambal provides an easy way to customize how to resolve any url.
 
-[Get started](https://www.sambal.dev/docs/get-started/) with Sambal to build your linked data [JAMstack](https://jamstack.org/) website.
+[Get started](https://www.sambal.dev/docs/get-started/) with Sambal to build your SEO [JAMstack](https://jamstack.org/) website.
