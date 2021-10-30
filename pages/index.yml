@@ -1,1 +1,5 @@
-"@id": /blog/latest
+"@type": "ItemList"
+name: Wan Chun Chen
+description: Wan Chun Chen personal website 
+itemListElement:
+  "@id": /blog/latest

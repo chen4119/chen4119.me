@@ -1,7 +1,7 @@
 ---
 "@type": BlogPosting
 headline: Json-ld spices up the staticness of static site generator
-description: 
+description: Discover how to join data fragments in markdown and yaml file without using database or CMS
 author:
   "@id": /pages/about.yml
 dateCreated: 2021-10-24
