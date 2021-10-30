@@ -10,7 +10,8 @@
     "scripts": {
         "start": "sambal serve",
         "build": "sambal build",
-        "deploy": "npm run theme && npm run build",
+        "deploy": "npm run theme && npm run build && npm run copyFiles",
+        "copyFiles": "node copyToPublic.js",
         "theme": "cd sambal-ui-material && npm install && npm run theme && cd .."
     },
     "devDependencies": {
