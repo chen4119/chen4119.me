@@ -33,7 +33,7 @@ The relationship between the author to blogpost is one to many.  John can write 
 
 Of course you can always use a CMS to model your data and then pull those data into your static site generator to generate your webpage.  However, this adds another level of complexity and cost.  We'll explore how json-ld and the concept of linked data can help make static markdown/yaml files more dynamic.
 
-# What is json-ld?
+## What is json-ld?
 
 [Json-ld](https://json-ld.org/) is a linked data format based on json.  If you have never heard of json-ld, that's ok.  The most important thing to know is that it's just plain old json with a few extra special fields.  It's also a w3c standard and you can check out the [complete spec](https://www.w3.org/TR/json-ld11/).  We don't really need to understand the whole spec, we're just interested in the way json-ld can reference other data fragments with a url using the keyword "@id"
 
@@ -44,7 +44,7 @@ author:
   "@id": https://example.com/author/johnsmith.yml     // @id is json-ld's way of referencing another data fragment
 ```
 
-# Using json-ld over json
+## Using json-ld over json
 
 Since json-ld is just json, it means you can also use it in a markdown or yaml file.  Now all of a sudden, static markdown and yaml files that's so prevalent in static site generators are not so static anymore.  It can join with other data fragments without a database or CMS.  You just need a client side json-ld processor.
 

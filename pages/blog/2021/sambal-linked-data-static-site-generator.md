@@ -5,7 +5,7 @@ description: Generate SEO website directly from schema.org json-ld content
 author:
   "@id": /pages/about.yml
 image:
-  "@id": /data/images/linked-data.jpg
+  "@id": /data/images/linked-data.yml
 dateCreated: 2021-07-09
 dateModified: 2021-10-04
 keywords: 
