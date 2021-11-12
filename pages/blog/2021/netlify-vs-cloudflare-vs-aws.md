@@ -44,7 +44,7 @@ I generated my website with [Sambal](https://sambal.dev) static site generator. 
 
 ## TTFB test
 
-To test how my static website perform across all regions around the world, I generated my static website with [Sambal](https://sambal.dev) and deployed the same website to all 3 platforms.  I then use [SpeedVitals TTFB test](https://speedvitals.com/ttfb-test) to test the time to first byte across 25 different locations without using custom domain.  I hit each platform with their native URL.  Here is the average latency for the 3 platforms across different regions.
+To test how my static website perform across all regions around the world, I deployed the same website to all 3 platforms then use [SpeedVitals TTFB test](https://speedvitals.com/ttfb-test) to test the time to first byte across 25 different locations without using custom domain.  I hit each platform with their native URL.  Here is the average latency for the 3 platforms across different regions.
 
 |                  | Americas | Europe | Asia  |
 |------------------|----------|--------|-------|
@@ -70,4 +70,4 @@ Netlify is a great platform for users who don't want to deal too much with techn
 
 Cloudflare is a great platform for developers who don't mind jumping through a few hoops to get the best performance.  Cloudflare DNS is one of the best DNS provider available and Cloudflare pages has consistently low latency across the globe.  The UX feels barebone and site navigation can be confusing but for the speed you get, I'm sure you can suck it up.
 
-As for AWS Amplify, it's hard to recommend to anyone unless the person is already using AWS, in which case, Amplify is the most logical choice.  It integrates with every other AWS offering so you don't have to worry about the limits of the platform as you might with Netlify or Cloudflare.
+AWS Amplify is a great choice for existing AWS users or people who don't mind getting their hands dirty with AWS.  It has a fast build time and good latency across the globe.  It integrates with every other AWS offering so you don't have to worry about the limits of the platform as you might with Netlify or Cloudflare.  It has a steeper learning curve but the end result of being familiar with AWS is worth it.
