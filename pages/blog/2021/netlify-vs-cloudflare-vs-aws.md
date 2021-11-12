@@ -32,8 +32,17 @@ Both Netlify and AWS Amplify allow you to easily set up custom domains with free
 
 Cloudflare pages on the other hand will force you to use their DNS service in order to set up custom domain.  It won't work with third party DNS providers.  This might be a deal breaker for some people but at least Clouflare offers a free plan for their DNS service and it's really fast.
 
+## Build time
 
-## Performance
+I generated my website with [Sambal](https://sambal.dev) static site generator.  Below is a timing of how fast each platform took from the moment I commit to github to a deployed website.  AWS Amplify was the fastest while Cloudflare took the longest.  For some reason Cloudflare took close to 2 minutes just to initialize the build environment.  By that time, AWS Amplify had already deployed my website.
+
+|                  | Build time |
+|------------------|------------|
+| AWS Amplify      | 1m 58s     |
+| Netlify          | 2m 33s     |
+| Cloudflare pages | 2m 53s     |
+
+## TTFB test
 
 To test how my static website perform across all regions around the world, I generated my static website with [Sambal](https://sambal.dev) and deployed the same website to all 3 platforms.  I then use [SpeedVitals TTFB test](https://speedvitals.com/ttfb-test) to test the time to first byte across 25 different locations without using custom domain.  I hit each platform with their native URL.  Here is the average latency for the 3 platforms across different regions.
 
@@ -62,5 +71,3 @@ Netlify is a great platform for users who don't want to deal too much with techn
 Cloudflare is a great platform for developers who don't mind jumping through a few hoops to get the best performance.  Cloudflare DNS is one of the best DNS provider available and Cloudflare pages has consistently low latency across the globe.  The UX feels barebone and site navigation can be confusing but for the speed you get, I'm sure you can suck it up.
 
 As for AWS Amplify, it's hard to recommend to anyone unless the person is already using AWS, in which case, Amplify is the most logical choice.  It integrates with every other AWS offering so you don't have to worry about the limits of the platform as you might with Netlify or Cloudflare.
-
-
