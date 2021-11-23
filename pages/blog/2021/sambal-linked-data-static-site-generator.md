@@ -56,4 +56,4 @@ Content of my post
 
 You can fetch author and publisher data directly from source and never worry about data becoming stale.  Sambal recursively hydrate json-ld data by automatically resolving all @id urls.  A url doesn't necessary need to be a https:// either.  It can be a AWS s3:// url, ipfs:// url, or pretty much any protocol.  Sambal provides an easy way to customize how to resolve any url.
 
-[Get started](https://www.sambal.dev/docs/get-started/) with Sambal to build your SEO [JAMstack](https://jamstack.org/) website.
+[Get started](https://sambal.dev/docs/get-started/) with Sambal to build your SEO [JAMstack](https://jamstack.org/) website.

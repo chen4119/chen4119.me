@@ -11,4 +11,4 @@ hasOfferCatalog:
   "@type": OfferCatalog
   name: Open source software
   itemListElement:
-    - "@id": https://www.sambal.dev/schema.json
+    - "@id": https://sambal.dev/schema.json

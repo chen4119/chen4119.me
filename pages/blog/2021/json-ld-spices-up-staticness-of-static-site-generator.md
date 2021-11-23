@@ -48,4 +48,4 @@ author:
 
 Since json-ld is just json, it means you can also use it in a markdown or yaml file.  Now all of a sudden, static markdown and yaml files that's so prevalent in static site generators are not so static anymore.  It can join with other data fragments without a database or CMS.  You just need a client side json-ld processor.
 
-[Sambal](http://sambal.dev) is a static site generator that natively supports schema.org json-ld as the content model.  [Get started](https://www.sambal.dev/docs/get-started/) to discover the power of linked data.
+[Sambal](https://sambal.dev) is a static site generator that natively supports schema.org json-ld as the content model.  [Get started](https://sambal.dev/docs/get-started/) to discover the power of linked data.
