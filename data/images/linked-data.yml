@@ -1,3 +1,3 @@
 "@type": ImageObject
-contentUrl: /data/images/linked-data.jpg
+contentUrl: /data/images/linked-data.jpg?output=webp&thumbnails=600w,300w,200w
 representativeOfPage: true

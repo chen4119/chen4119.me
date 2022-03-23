@@ -5,7 +5,7 @@ description: Comparing TTFB performance and ease of use of deploying static webs
 author:
   "@id": /pages/about.yml
 image:
-  "@id": /data/images/aws-amplify-console.png
+  "@id": /data/images/aws-amplify-console.png?output=webp&thumbnails=600w,300w,200w
 dateCreated: 2021-11-11
 dateModified: 2021-11-11
 keywords: 

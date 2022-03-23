@@ -5,15 +5,16 @@
     "author": "Wan Chun Chen",
     "license": "MIT",
     "engines": {
-        "node": ">=8.0.0"
+        "node": ">=16.0.0"
     },
+    "workspaces": [
+        "sambal-ui-material"
+    ],
     "scripts": {
         "start": "sambal serve",
-        "build": "sambal build",
-        "deploy": "npm run theme && npm run build",
-        "theme": "cd sambal-ui-material && npm install && npm run theme && cd .."
+        "build": "sambal build"
     },
     "devDependencies": {
-        "sambal": "0.0.63"
+        "sambal": "0.1.6"
     }
 }
