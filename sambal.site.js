@@ -33,7 +33,7 @@ export const siteConfig = {
         name: "sambal-ui-material",
         options: {
             landingPage: false,
-            googleAnalyticsId: "UA-12310823-5"
+            googleAnalyticsId: "G-56FYBZP0PY"
         }
     }
 };
